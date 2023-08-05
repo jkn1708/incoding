@@ -1,12 +1,19 @@
 import React, { useState } from "react";
 import "./App.css";
+interface data {
+  I_bit: string;
+  I_asc: string;
+  I_base64: string;
+  D_asc: string;
+  D_utf16: string;
+}
 
 function App() {
-  //입력한 문자열
-  const [str, setStr] = useState<string>("");
+  //변환된 데이터
+  const [data, setData] = useState<data>();
 
-  const incodingAndDecoding = (value: string) => {
-    //incoding ------------
+  const incodingAndDecoding = (value: string): void => {
+    //------------------- incoding ------------------------
 
     //문자 ->bit
     let arrBit = [];
@@ -23,7 +30,7 @@ function App() {
     //asc -> base64
     const I_base64 = btoa(I_asc);
 
-    //decoding  -------------
+    //----------------  decoding  -----------------------
 
     //base64 -> asc
     const D_asc = atob(I_base64);
@@ -41,13 +48,13 @@ function App() {
 
       arrbitFromAcs.push(bit);
     }
-
     const D_bit = arrbitFromAcs.join("");
     const D_utf16 = String.fromCharCode(...chunkSubstr(D_bit, 16));
 
-    return { I_bit, I_asc, I_base64, D_asc, D_utf16 };
+    setData({ I_bit, I_asc, I_base64, D_asc, D_utf16 });
   };
 
+  //입력한 숫자대로 문자열을 잘라 주는 함수
   const chunkSubstr = (str: string, size: number) => {
     const numChunks = Math.ceil(str.length / size);
     const chunks = new Array(numChunks);
@@ -63,19 +70,19 @@ function App() {
       <div>입력</div>
       <textarea
         onChange={(e) => {
-          setStr(e.target.value);
+          incodingAndDecoding(e.target.value);
         }}
       ></textarea>
       <div>bits</div>
-      <textarea value={incodingAndDecoding(str).I_bit}></textarea>
+      <textarea value={data?.I_bit}></textarea>
       <div>{`인코드: bits > ASCII`}</div>
-      <textarea value={incodingAndDecoding(str).I_asc}></textarea>
+      <textarea value={data?.I_asc}></textarea>
       <div>{`인코드: ASCII > Base64`}</div>
-      <textarea value={incodingAndDecoding(str).I_base64}></textarea>
+      <textarea value={data?.I_base64}></textarea>
       <div>{`디코드: Base64 > ASCII`}</div>
-      <textarea value={incodingAndDecoding(str).D_asc}></textarea>
+      <textarea value={data?.D_asc}></textarea>
       <div>{`디코드: ASCII > UTF-16`}</div>
-      <textarea value={incodingAndDecoding(str).D_utf16}></textarea>
+      <textarea value={data?.D_utf16}></textarea>
     </div>
   );
 }
